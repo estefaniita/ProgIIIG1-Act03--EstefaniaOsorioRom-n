@@ -1,0 +1,30 @@
+% Estructura de persona: persona(Nombre, Genero, Edad)
+% Hecho con lista de hijos: familia(Padre, Madre, [Lista_de_Hijos])
+
+familia(
+    persona(homero, masculino, 39),
+    persona(marge, femenino, 36),
+    [persona(bart, masculino, 10), persona(lisa, femenino, 8), persona(maggie, femenino, 1)]
+).
+
+familia(
+    persona(abraham, masculino, 70),
+    persona(mona, femenino, 68),
+    [persona(homero, masculino, 39), persona(herbert, masculino, 37)]
+).
+
+% Regla para saber si alguien es hijo usando listas
+hijo(Hijo, Padre) :-
+    familia(Padre, _, Hijos),
+    member(Hijo, Hijos).
+
+hijo(Hijo, _, Madre) :-
+    familia(_, Madre, Hijos),
+    member(Hijo, Hijos).
+
+% Regla para saber si dos personas son hermanos
+hermano(persona(N1, G1, E1), persona(N2, G2, E2)) :-
+    familia(_, _, Hijos),
+    member(persona(N1, G1, E1), Hijos),
+    member(persona(N2, G2, E2), Hijos),
+    N1 \== N2.
