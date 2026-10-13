@@ -1,0 +1,33 @@
+% Estructura de aristas con origen, destino y costo
+arista(origen(vancouver), destino(edmonton), costo(16)).
+arista(origen(vancouver), destino(calgary), costo(13)).
+arista(origen(calgary), destino(edmonton), costo(4)).
+arista(origen(calgary), destino(regina), costo(14)).
+arista(origen(edmonton), destino(saskatoon), costo(12)).
+arista(origen(saskatoon), destino(calgary), costo(9)).
+arista(origen(saskatoon), destino(winnipeg), costo(20)).
+arista(origen(regina), destino(saskatoon), costo(7)).
+arista(origen(regina), destino(winnipeg), costo(4)).
+
+% Regla para calcular costo pasando por un punto intermedio
+costo_pasando_por(X, Y, Z, costo(CostoTotal)) :-
+    arista(origen(X), destino(Y), costo(C1)),
+    arista(origen(Y), destino(Z), costo(C2)),
+    CostoTotal is C1 + C2.
+
+% Búsqueda de caminos utilizando listas para registrar la ruta y evitar ciclos
+camino(Origen, Destino, [Origen, Destino], costo(Costo)) :-
+    arista(origen(Origen), destino(Destino), costo(Costo)).
+
+camino(Origen, Destino, [Origen | Ruta], costo(CostoTotal)) :-
+    camino_aux(Origen, Destino, [Origen], Ruta, CostoTotal).
+
+camino_aux(Origen, Destino, _, [Destino], Costo) :-
+    arista(origen(Origen), destino(Destino), costo(Costo)).
+
+camino_aux(Origen, Destino, Visitados, [Intermedio | Ruta], CostoTotal) :-
+    arista(origen(Origen), destino(Intermedio), costo(C1)),
+    Intermedio \== Destino,
+    \+ member(Intermedio, Visitados),
+    camino_aux(Intermedio, Destino, [Intermedio | Visitados], Ruta, C2),
+    CostoTotal is C1 + C2.
